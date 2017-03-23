@@ -54,3 +54,12 @@ C:\Users\washj\Google Drive\BugProject\JARVIS_mgen\bin\Debug\JARVIS_mgen.exe.con
 C:\Users\washj\Google Drive\BugProject\JARVIS_mgen\obj\Debug\JARVIS_mgen.exe
 C:\Users\washj\Google Drive\BugProject\JARVIS_mgen\obj\Debug\JARVIS_mgen.xml
 C:\Users\washj\Google Drive\BugProject\JARVIS_mgen\obj\Debug\JARVIS_mgen.pdb
+C:\Users\washj\Google Drive\BugProject\JARVIS_mgen\bin\Debug\JARVIS_mgen.exe
+C:\Users\washj\Google Drive\BugProject\JARVIS_mgen\bin\Debug\JARVIS_mgen.pdb
+C:\Users\washj\Google Drive\BugProject\JARVIS_mgen\bin\Debug\JARVIS_mgen.xml
+C:\Users\washj\Google Drive\BugProject\JARVIS_mgen\obj\Debug\JARVIS_mgen.vbprojResolveAssemblyReference.cache
+C:\Users\washj\Google Drive\BugProject\JARVIS_mgen\obj\Debug\JARVIS_mgen.MainForm.resources
+C:\Users\washj\Google Drive\BugProject\JARVIS_mgen\obj\Debug\JARVIS_mgen.Resources.resources
+C:\Users\washj\Google Drive\BugProject\JARVIS_mgen\obj\Debug\JARVIS_mgen.Slider.resources
+C:\Users\washj\Google Drive\BugProject\JARVIS_mgen\obj\Debug\JARVIS_mgen.SliderVertical.resources
+C:\Users\washj\Google Drive\BugProject\JARVIS_mgen\obj\Debug\JARVIS_mgen.vbproj.GenerateResource.Cache
