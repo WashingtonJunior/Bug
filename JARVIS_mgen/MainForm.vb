@@ -29,7 +29,7 @@ Public Class MainForm
     Private Sub MainForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         CarregarMovimentos()
 
-        Dim init() As String = CarregarPosições("init.seq")
+        'Dim init() As String = CarregarPosições("init.seq")
 
         'Enviar("Inicializado!")
 
