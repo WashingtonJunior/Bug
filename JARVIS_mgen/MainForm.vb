@@ -29,6 +29,8 @@ Public Class MainForm
     Private Sub MainForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         CarregarMovimentos()
 
+        Dim init() As String = CarregarPosições("init.seq")
+
         'Enviar("Inicializado!")
 
         'serial = New IO.Ports.SerialPort("COM5", 9600)
@@ -172,7 +174,7 @@ Public Class MainForm
         Enviar("OFF")
     End Sub
 
-    Private Sub Servo_Scroll(sender As Object, e As EventArgs) Handles Servo1.Scroll, Servo2.Scroll, Servo3.Scroll, Servo4.Scroll, Servo5.Scroll, Servo6.Scroll, Servo7.Scroll, Servo8.Scroll, Servo9.Scroll, Servo10.Scroll, Servo16.Scroll, Servo13.Scroll, Servo15.Scroll, Servo12.Scroll, Servo11.Scroll, Servo14.Scroll
+    Private Sub Servo_Scroll(sender As Object, e As EventArgs) Handles Servo0.Scroll, Servo1.Scroll, Servo2.Scroll, Servo3.Scroll, Servo4.Scroll, Servo5.Scroll, Servo6.Scroll, Servo7.Scroll, Servo8.Scroll, Servo9.Scroll, Servo10.Scroll, Servo11.Scroll, Servo12.Scroll, Servo13.Scroll, Servo14.Scroll, Servo15.Scroll, Servo16.Scroll, Servo17.Scroll
         'If serial IsNot Nothing AndAlso serial.IsOpen() Then
         'Stop
         Dim cmd As String = sender.ServoID & sender.Value.ToString()
@@ -214,7 +216,7 @@ Public Class MainForm
         'End If
     End Sub
 
-    Private Sub Servo_ButtonClick(sender As Object, e As EventArgs) Handles Servo1.ButtonClick, Servo2.ButtonClick, Servo3.ButtonClick, Servo4.ButtonClick, Servo5.ButtonClick, Servo6.ButtonClick, Servo7.ButtonClick, Servo8.ButtonClick, Servo9.ButtonClick, Servo16.ButtonClick, Servo13.ButtonClick, Servo15.ButtonClick, Servo12.ButtonClick, Servo11.ButtonClick, Servo14.ButtonClick, Servo10.ButtonClick
+    Private Sub Servo_ButtonClick(sender As Object, e As EventArgs) Handles Servo0.ButtonClick, Servo1.ButtonClick, Servo2.ButtonClick, Servo3.ButtonClick, Servo4.ButtonClick, Servo5.ButtonClick, Servo6.ButtonClick, Servo7.ButtonClick, Servo8.ButtonClick, Servo9.ButtonClick, Servo10.ButtonClick, Servo11.ButtonClick, Servo12.ButtonClick, Servo13.ButtonClick, Servo14.ButtonClick, Servo15.ButtonClick, Servo16.ButtonClick, Servo17.ButtonClick
         If lbPosições.SelectedIndex > -1 AndAlso (ModifierKeys AndAlso Keys.Shift = Keys.Shift) Then
             Dim sel As String = lbPosições.SelectedItem
             'Stop
@@ -300,7 +302,13 @@ Public Class MainForm
         Dim chunk As String = sr.ReadToEnd()
         sr.Close()
 
-        Dim linhas() As String = chunk.Split(New String() {vbCrLf}, StringSplitOptions.RemoveEmptyEntries)
+        Dim sepLinha As String = vbCrLf
+
+        If chunk.IndexOf(sepLinha) < 0 Then
+            sepLinha = vbLf
+        End If
+
+        Dim linhas() As String = chunk.Split(New String() {sepLinha}, StringSplitOptions.RemoveEmptyEntries)
 
         Return linhas
     End Function
@@ -421,32 +429,32 @@ Public Class MainForm
         End If
     End Sub
 
-    Private Sub btnMovParaSliders_Click(sender As Object, e As EventArgs) Handles btnMovParaSliders.Click
-        If lbMovimentos.SelectedIndex >= 0 Then
-            Dim nomearq As String = lbMovimentos.SelectedItem
+    'Private Sub btnMovParaSliders_Click(sender As Object, e As EventArgs)
+    '    If lbMovimentos.SelectedIndex >= 0 Then
+    '        Dim nomearq As String = lbMovimentos.SelectedItem
 
-            Dim arq As String = IO.Path.Combine(Me.Pasta, nomearq)
+    '        Dim arq As String = IO.Path.Combine(Me.Pasta, nomearq)
 
-            Dim sr As New IO.StreamReader(arq)
-            Dim chunk As String = sr.ReadToEnd()
-            sr.Close()
+    '        Dim sr As New IO.StreamReader(arq)
+    '        Dim chunk As String = sr.ReadToEnd()
+    '        sr.Close()
 
-            Dim linhas() As String = chunk.Split(New String() {vbCrLf}, StringSplitOptions.RemoveEmptyEntries)
+    '        Dim linhas() As String = chunk.Split(New String() {vbCrLf}, StringSplitOptions.RemoveEmptyEntries)
 
-            For Each linha As String In linhas
-                For Each ctrl As Control In Me.Controls
-                    If TypeOf ctrl Is Slider Then
-                        Dim sl As Slider = ctrl
+    '        For Each linha As String In linhas
+    '            For Each ctrl As Control In Me.Controls
+    '                If TypeOf ctrl Is Slider Then
+    '                    Dim sl As Slider = ctrl
 
-                        If sl.ServoID = linha(0) Then
-                            sl.Value = Integer.Parse(linha.Substring(1))
-                        End If
-                    End If
-                Next
-            Next
-        End If
+    '                    If sl.ServoID = linha(0) Then
+    '                        sl.Value = Integer.Parse(linha.Substring(1))
+    '                    End If
+    '                End If
+    '            Next
+    '        Next
+    '    End If
 
-    End Sub
+    'End Sub
 
     Private Sub btnReferenciar_Click(sender As Object, e As EventArgs) Handles btnReferenciar.Click
         If lbMovimentos.SelectedIndex >= 0 Then
@@ -456,7 +464,7 @@ Public Class MainForm
         End If
     End Sub
 
-    Private Sub Servo_MaxPulseChanged(sender As Object, e As EventArgs) Handles Servo1.MaxPulseChanged, Servo2.MaxPulseChanged, Servo3.MaxPulseChanged, Servo4.MaxPulseChanged, Servo5.MaxPulseChanged, Servo6.MaxPulseChanged, Servo7.MaxPulseChanged, Servo8.MaxPulseChanged, Servo9.MaxPulseChanged, Servo10.MaxPulseChanged, Servo16.MaxPulseChanged, Servo15.MaxPulseChanged, Servo12.MaxPulseChanged, Servo11.MaxPulseChanged, Servo14.MaxPulseChanged, Servo13.MaxPulseChanged
+    Private Sub Servo_MaxPulseChanged(sender As Object, e As EventArgs) Handles Servo0.MaxPulseChanged, Servo1.MaxPulseChanged, Servo2.MaxPulseChanged, Servo3.MaxPulseChanged, Servo4.MaxPulseChanged, Servo5.MaxPulseChanged, Servo6.MaxPulseChanged, Servo7.MaxPulseChanged, Servo8.MaxPulseChanged, Servo9.MaxPulseChanged, Servo10.MaxPulseChanged, Servo11.MaxPulseChanged, Servo12.MaxPulseChanged, Servo13.MaxPulseChanged, Servo14.MaxPulseChanged, Servo15.MaxPulseChanged, Servo16.MaxPulseChanged, Servo17.MaxPulseChanged
         Dim sl As ISlider = sender
         Dim cmd As String = ")" & sl.ServoID & ":" & sl.MaxPulse.ToString()
 
@@ -464,7 +472,7 @@ Public Class MainForm
         Debug.Print(cmd)
     End Sub
 
-    Private Sub Servo_MinPulseChanged(sender As Object, e As EventArgs) Handles Servo1.MinPulseChanged, Servo2.MinPulseChanged, Servo3.MinPulseChanged, Servo4.MinPulseChanged, Servo5.MinPulseChanged, Servo6.MinPulseChanged, Servo7.MinPulseChanged, Servo8.MinPulseChanged, Servo9.MinPulseChanged, Servo10.MinPulseChanged, Servo16.MinPulseChanged, Servo15.MinPulseChanged, Servo12.MinPulseChanged, Servo11.MinPulseChanged, Servo14.MinPulseChanged, Servo13.MinPulseChanged
+    Private Sub Servo_MinPulseChanged(sender As Object, e As EventArgs) Handles Servo0.MinPulseChanged, Servo1.MinPulseChanged, Servo2.MinPulseChanged, Servo3.MinPulseChanged, Servo4.MinPulseChanged, Servo5.MinPulseChanged, Servo6.MinPulseChanged, Servo7.MinPulseChanged, Servo8.MinPulseChanged, Servo9.MinPulseChanged, Servo10.MinPulseChanged, Servo11.MinPulseChanged, Servo12.MinPulseChanged, Servo13.MinPulseChanged, Servo14.MinPulseChanged, Servo15.MinPulseChanged, Servo16.MinPulseChanged, Servo17.MinPulseChanged
         Dim sl As ISlider = sender
         Dim cmd As String = "(" & sl.ServoID & ":" & sl.MinPulse.ToString()
 

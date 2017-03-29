@@ -27,6 +27,31 @@ JARVIS_mgen
   Looks up a localized resource of type System.Drawing.Bitmap.
 </summary>
 </member>
+<member name="P:JARVIS_mgen.My.Resources.Resources.Bug2">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:JARVIS_mgen.My.Resources.Resources.Bug3">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:JARVIS_mgen.My.Resources.Resources.Bug4">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:JARVIS_mgen.My.Resources.Resources.Bug5">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:JARVIS_mgen.My.Resources.Resources.Bug6">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
 <member name="P:JARVIS_mgen.My.Resources.Resources.Jarvis14">
 <summary>
   Looks up a localized resource of type System.Drawing.Bitmap.
