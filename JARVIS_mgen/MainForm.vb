@@ -6,7 +6,12 @@ Public Class MainForm
 
     Public ReadOnly Property Pasta As String
         Get
-            Dim pst As String = IO.Path.Combine(Application.StartupPath, "jarvis")
+            'Dim pst As String = IO.Path.Combine(Application.StartupPath, "jarvis")
+            Dim pst As String = My.Settings.PastaTrabalho
+
+            If String.IsNullOrEmpty(pst) Then
+                txtDirTrabalho.Text = IO.Path.Combine(Application.StartupPath, "jarvis")
+            End If
 
             Return pst
         End Get
@@ -23,10 +28,16 @@ Public Class MainForm
     End Property
 
     Private Sub MainForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
-        'serial.Close()
+        My.Settings.Save()
     End Sub
 
     Private Sub MainForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        If My.Settings.UpgradeRequired Then
+            My.Settings.Upgrade()
+            My.Settings.UpgradeRequired = False
+            My.Settings.Save()
+        End If
+
         CarregarMovimentos()
 
         'Dim init() As String = CarregarPosições("init.seq")
@@ -36,6 +47,7 @@ Public Class MainForm
         'serial = New IO.Ports.SerialPort("COM5", 9600)
 
         'serial.Open()
+
     End Sub
 
     Public Function CarregarPosiçõesString(ByVal arq As String) As String
@@ -264,11 +276,15 @@ Public Class MainForm
     Public Sub CarregarMovimentos()
         lbMovimentos.Items.Clear()
 
-        Dim arqs() As String = IO.Directory.GetFiles(Me.Pasta, "*.seq")
+        If IO.Directory.Exists(txtDirTrabalho.Text) Then
+            Dim arqs() As String = IO.Directory.GetFiles(txtDirTrabalho.Text, "*.seq")
 
-        For Each arq As String In arqs
-            lbMovimentos.Items.Add(IO.Path.GetFileName(arq))
-        Next
+            For Each arq As String In arqs
+                lbMovimentos.Items.Add(IO.Path.GetFileName(arq))
+            Next
+            'Else
+            '    MessageBox.Show("A pasta de trabalho '" & Me.Pasta & " não existe!", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End If
     End Sub
 
     Public Sub ExecutarArquivo(ByVal nomearq As String)
@@ -297,18 +313,22 @@ Public Class MainForm
 
     Public Function CarregarPosições(ByVal nome As String) As String()
         Dim arq As String = IO.Path.Combine(Me.Pasta, nome.Replace("|", ""))
+        Dim linhas() As String = {}
 
-        Dim sr As New IO.StreamReader(arq)
-        Dim chunk As String = sr.ReadToEnd()
-        sr.Close()
+        If IO.File.Exists(arq) Then
 
-        Dim sepLinha As String = vbCrLf
+            Dim sr As New IO.StreamReader(arq)
+            Dim chunk As String = sr.ReadToEnd()
+            sr.Close()
 
-        If chunk.IndexOf(sepLinha) < 0 Then
-            sepLinha = vbLf
+            Dim sepLinha As String = vbCrLf
+
+            If chunk.IndexOf(sepLinha) < 0 Then
+                sepLinha = vbLf
+            End If
+
+            linhas = chunk.Split(New String() {sepLinha}, StringSplitOptions.RemoveEmptyEntries)
         End If
-
-        Dim linhas() As String = chunk.Split(New String() {sepLinha}, StringSplitOptions.RemoveEmptyEntries)
 
         Return linhas
     End Function
@@ -643,4 +663,15 @@ Public Class MainForm
         Enviar("RESET")
     End Sub
 
+    Private Sub btnSelDir_Click(sender As Object, e As EventArgs) Handles btnSelDir.Click
+        Dim selDir As New FolderBrowserDialog()
+
+        If selDir.ShowDialog() = DialogResult.OK Then
+            txtDirTrabalho.Text = selDir.SelectedPath
+        End If
+    End Sub
+
+    Private Sub txtDirTrabalho_TextChanged(sender As Object, e As EventArgs) Handles txtDirTrabalho.TextChanged
+        CarregarMovimentos()
+    End Sub
 End Class

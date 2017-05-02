@@ -45,6 +45,8 @@ Partial Class MainForm
         Me.txtPausaEntreEnvios = New System.Windows.Forms.TextBox()
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.lblPausaEntreEnvios = New System.Windows.Forms.Label()
+        Me.lblQtExecutar = New System.Windows.Forms.Label()
+        Me.btnSelDir = New System.Windows.Forms.Button()
         Me.Servo14 = New JARVIS_mgen.Slider()
         Me.Servo17 = New JARVIS_mgen.Slider()
         Me.Servo13 = New JARVIS_mgen.Slider()
@@ -63,7 +65,7 @@ Partial Class MainForm
         Me.Servo4 = New JARVIS_mgen.Slider()
         Me.Servo2 = New JARVIS_mgen.Slider()
         Me.Servo1 = New JARVIS_mgen.Slider()
-        Me.lblQtExecutar = New System.Windows.Forms.Label()
+        Me.txtDirTrabalho = New System.Windows.Forms.TextBox()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -135,11 +137,12 @@ Partial Class MainForm
         '
         'txtEndereço
         '
+        Me.txtEndereço.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.JARVIS_mgen.My.MySettings.Default, "IP", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
         Me.txtEndereço.Location = New System.Drawing.Point(14, 12)
         Me.txtEndereço.Name = "txtEndereço"
         Me.txtEndereço.Size = New System.Drawing.Size(123, 21)
         Me.txtEndereço.TabIndex = 19
-        Me.txtEndereço.Text = "192.168.0.155"
+        Me.txtEndereço.Text = Global.JARVIS_mgen.My.MySettings.Default.IP
         '
         'txtPorta
         '
@@ -262,7 +265,7 @@ Partial Class MainForm
         Me.txtPausaEntreEnvios.Name = "txtPausaEntreEnvios"
         Me.txtPausaEntreEnvios.Size = New System.Drawing.Size(100, 21)
         Me.txtPausaEntreEnvios.TabIndex = 46
-        Me.txtPausaEntreEnvios.Text = "100"
+        Me.txtPausaEntreEnvios.Text = "400"
         '
         'PictureBox1
         '
@@ -282,6 +285,25 @@ Partial Class MainForm
         Me.lblPausaEntreEnvios.Size = New System.Drawing.Size(121, 13)
         Me.lblPausaEntreEnvios.TabIndex = 56
         Me.lblPausaEntreEnvios.Text = "Pausa entre envios:"
+        '
+        'lblQtExecutar
+        '
+        Me.lblQtExecutar.AutoSize = True
+        Me.lblQtExecutar.Location = New System.Drawing.Point(1152, 513)
+        Me.lblQtExecutar.Name = "lblQtExecutar"
+        Me.lblQtExecutar.Size = New System.Drawing.Size(25, 13)
+        Me.lblQtExecutar.TabIndex = 57
+        Me.lblQtExecutar.Text = "Qt:"
+        '
+        'btnSelDir
+        '
+        Me.btnSelDir.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnSelDir.Location = New System.Drawing.Point(1116, 1)
+        Me.btnSelDir.Name = "btnSelDir"
+        Me.btnSelDir.Size = New System.Drawing.Size(40, 24)
+        Me.btnSelDir.TabIndex = 58
+        Me.btnSelDir.Text = "..."
+        Me.btnSelDir.UseVisualStyleBackColor = True
         '
         'Servo14
         '
@@ -583,20 +605,23 @@ Partial Class MainForm
         Me.Servo1.Tag = ""
         Me.Servo1.Value = 90
         '
-        'lblQtExecutar
+        'txtDirTrabalho
         '
-        Me.lblQtExecutar.AutoSize = True
-        Me.lblQtExecutar.Location = New System.Drawing.Point(1152, 513)
-        Me.lblQtExecutar.Name = "lblQtExecutar"
-        Me.lblQtExecutar.Size = New System.Drawing.Size(25, 13)
-        Me.lblQtExecutar.TabIndex = 57
-        Me.lblQtExecutar.Text = "Qt:"
+        Me.txtDirTrabalho.DataBindings.Add(New System.Windows.Forms.Binding("Text", Global.JARVIS_mgen.My.MySettings.Default, "PastaTrabalho", True, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))
+        Me.txtDirTrabalho.Font = New System.Drawing.Font("Verdana", 6.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtDirTrabalho.Location = New System.Drawing.Point(1116, 27)
+        Me.txtDirTrabalho.Name = "txtDirTrabalho"
+        Me.txtDirTrabalho.Size = New System.Drawing.Size(239, 18)
+        Me.txtDirTrabalho.TabIndex = 59
+        Me.txtDirTrabalho.Text = Global.JARVIS_mgen.My.MySettings.Default.PastaTrabalho
         '
         'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1362, 731)
+        Me.ClientSize = New System.Drawing.Size(1354, 731)
+        Me.Controls.Add(Me.txtDirTrabalho)
+        Me.Controls.Add(Me.btnSelDir)
         Me.Controls.Add(Me.lblQtExecutar)
         Me.Controls.Add(Me.lblPausaEntreEnvios)
         Me.Controls.Add(Me.Servo14)
@@ -690,4 +715,6 @@ Partial Class MainForm
     Friend WithEvents Servo14 As Slider
     Friend WithEvents lblPausaEntreEnvios As Label
     Friend WithEvents lblQtExecutar As Label
+    Friend WithEvents btnSelDir As Button
+    Friend WithEvents txtDirTrabalho As TextBox
 End Class

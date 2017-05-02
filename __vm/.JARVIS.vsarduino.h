@@ -13,7 +13,7 @@
 #define __AVR_ATmega32u4__
 #define __AVR_ATmega32U4__
 #define F_CPU 16000000L
-#define ARDUINO 10609
+#define ARDUINO 10802
 #define ARDUINO_AVR_YUN
 #define ARDUINO_ARCH_AVR
 #define USB_VID 0x2341
@@ -67,5 +67,4 @@ typedef void *__builtin_va_list;
 #define F(string_literal) ((const PROGMEM char *)(string_literal))
 #undef PSTR
 #define PSTR(string_literal) ((const PROGMEM char *)(string_literal))
-#include "JARVIS.ino"
 #endif
