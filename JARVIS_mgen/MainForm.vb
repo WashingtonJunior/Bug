@@ -71,7 +71,7 @@ Public Class MainForm
         Return paraenviar.ToString()
     End Function
 
-    Public Sub Enviar(ByVal dados As String, Optional ByVal checarOcupado As Boolean = False)
+    Public Sub Enviar(ByVal dados As String, Optional ByVal checarOcupado As Boolean = False, Optional ByVal semPausa As Boolean = False)
         If checarOcupado Then
             Dim ocupado As String = ReceberDados("BUSY", 1)
 
@@ -95,7 +95,9 @@ Public Class MainForm
         Else
             EnviarDados(dados & "|")
 
-            Threading.Thread.Sleep(pausaEntreEnvios)
+            If Not semPausa Then
+                Threading.Thread.Sleep(pausaEntreEnvios)
+            End If
 
             If Not (dados.StartsWith("(") Or dados.StartsWith(")") Or dados.Contains("|")) AndAlso dados.Contains(":") Then
                 Dim stempo As String = dados.Substring(dados.IndexOf(":") + 1)
@@ -488,7 +490,7 @@ Public Class MainForm
         Dim sl As ISlider = sender
         Dim cmd As String = ")" & sl.ServoID & ":" & sl.MaxPulse.ToString()
 
-        Enviar(cmd)
+        Enviar(cmd, semPausa:=True)
         Debug.Print(cmd)
     End Sub
 
@@ -496,7 +498,7 @@ Public Class MainForm
         Dim sl As ISlider = sender
         Dim cmd As String = "(" & sl.ServoID & ":" & sl.MinPulse.ToString()
 
-        Enviar(cmd)
+        Enviar(cmd, semPausa:=True)
         Debug.Print(cmd)
     End Sub
 

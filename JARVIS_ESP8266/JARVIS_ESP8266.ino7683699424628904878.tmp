@@ -55,8 +55,6 @@ char toExecute[MAXDATA];
 
 IPAddress ip;
 
-char resto[MAXDATA];
-
 /*
 void printWifiStatus();
 int split(char* data, const char* separador, char retorno[MAXQTTOKEN][MAXTOKEN]);
@@ -70,15 +68,12 @@ void setup() {
   digitalWrite(LED_BUILTIN, HIGH);
 
   Serial.begin(9600);
-  Serial.println();
+
   Serial.println("J.A.R.V.I.S. (ESP8266) Loaded! v1.2");
   Serial.println("[A-P][0-180]:speed, OFF, ~[0-9999], ![0-15], ACC");
 
   memset(toExecute, 0, MAXDATA);
   toExecute[0] = '\0';
-
-  memset(resto, 0, MAXDATA);
-  resto[0] = '\0';
 
   pwm.begin();
   pwm.setPWMFreq(60);  // Analog servos run at ~60 Hz updates
@@ -89,7 +84,6 @@ void setup() {
   //Reseting lastpulse and mempos for all servos
   for (byte i=0;i<MAXSERVOS;i++)
   {
-    yield();
     lastpulse[i]=-1;
 
     servomin[i] = SERVOMIN;
@@ -165,35 +159,9 @@ void loop() {
       {
     		memset(data, 0, MAXDATA);
         data[0] = '\0';
-        
-        int inicio = strlen(resto);
-
-        //Serial.print("strlen(resto) = ");
-        //Serial.println(inicio);
-        
-        if (inicio>0)
-        {
-          strcpy(data, resto);
-          data[inicio] = '\0';
-          //Serial.print("data (com resto): ");
-          //Serial.println(data);
-          client.read((unsigned char*)data+inicio, MAXDATA-inicio); // read the packet into the buffer
-
-          data[MAXDATA] = '\0';
-          //Serial.print("data (com resto+recebimento): ");
-          //Serial.println(data);
-          memset(resto, 0, MAXDATA);
-          resto[0] = '\0';
-        }
-        else
-        {
-          data[0] = '\0';
-          client.read((unsigned char*)data, MAXDATA); // read the packet into the buffer
-        }
+    		client.read((unsigned char*)data, MAXDATA); // read the packet into the buffer
 
         recebeu = 1;
-
-        data[MAXDATA] = '\0';
         
         Serial.print("Recebeu via TCP: ");
         Serial.println(data);
@@ -220,80 +188,51 @@ void loop() {
   {
   	char tokens[MAXQTTOKEN][MAXTOKEN];
   
-  	//Serial.print("SizeOf tokens: ");
-  	//Serial.println(sizeof(tokens));
+  	Serial.print("SizeOf tokens: ");
+  	Serial.println(sizeof(tokens));
 
   	Serial.print("data = '");
   	Serial.print(data);
   	Serial.println("'");
 
-    data[MAXDATA] = '\0';
-    
+    int qttokens = split(data, "|", tokens);
+
+
     int posfinal = 0;
     
-    for (int j=MAXDATA-1; j>0; j--)
+    for (j=MAXDATA; j>=0; j--)
     {
-      yield();
-      /*
-      if (data[j]!='\0')
-      {
-        Serial.print("data[");
-        Serial.print(j);
-        Serial.print("]='");
-        Serial.print(data[j]);
-        Serial.println("'");
-      }
-      */
       if (data[j]=='|')
       {
         posfinal = j;
-        //Serial.print("posfinal = ");
-        //Serial.println(posfinal);
-        //Serial.println("break");
         break;
       }
     }
 
-    //Serial.print("posfinal = ");
-    //Serial.println(posfinal);
-    
-    memset(resto, 0, MAXDATA);
+    char resto[MAXDATA-posfinal];
 
-    strcpy(resto, data+posfinal+1);
+    strcpy(resto, data+posfinal);
     
-    //Serial.print("Resto: '");
-    //Serial.print(resto);
-    //Serial.println("'");
+    Serial.print("Resto: ");
+    Serial.println(resto);
 
-    data[posfinal+1] = '\0';
-
-    int qttokens = split(data, "|", tokens);
-    
-  	//Serial.print("qttokens = ");
-  	//Serial.println(qttokens);
+  	Serial.print("qttokens = ");
+  	Serial.println(qttokens);
   
   	for (int idx = 0; idx < qttokens; idx++)
   	{
-      yield();
   		listAdd(tokens[idx]);
   	}
 
-    Serial.print("root -> ");
+    Serial.println("current = root");
     
   	current = root;
-
-    if (current)
-    {
-      Serial.print(current->val);
-    }
-    
+  
   	while (current)
   	{
-      yield();
-      
-//  		Serial.print("current->val = '");
-//  		Serial.print(current->val);
-//  		Serial.println("'");
+  		Serial.print("current->val = '");
+  		Serial.print(current->val);
+  		Serial.println("'");
   
   		//delay(PAUSE);
   
@@ -326,7 +265,6 @@ void loop() {
     
   			for (byte i=0;i<MAXSERVOS;i++)
   			{
-          yield();
   				offServo(i);
   			}
   		}
@@ -426,28 +364,24 @@ void loop() {
   		{
   			byte servonum = getValue(recebido);
   			short minvalue = getExtraValue(recebido);
-
-        /*
+          
   			Serial.print("Servo:");
   			Serial.print(servonum);
   			Serial.print(" - MIN:");
   			Serial.println(minvalue);
-        */
-        
+    
   			servomin[servonum] = minvalue;
   		}
   		else if (recebido[0]==')')
   		{
   			byte servonum = getValue(recebido);
   			short maxvalue = getExtraValue(recebido);
-
-        /*
+          
   			Serial.print("Servo:");
   			Serial.print(servonum);
   			Serial.print(" - MAX:");
   			Serial.println(maxvalue);
-        */
-        
+    
   			servomax[servonum] = maxvalue;
   		}
   		else if (strcmp(recebido, "ACC")==0)
@@ -466,13 +400,12 @@ void loop() {
   		else if (recebido[0]=='*')
   		{
   			isBusy = 1;
-  			//Serial.println("Desmembrando:");
+  			Serial.println("Desmembrando:");
     
   			char cmds[MAXSERVOS][16];
     
   			for (byte i=0;i<MAXSERVOS;i++)
   			{
-          yield();
   				cmds[i][0] = '\0';
   			}
           
@@ -484,9 +417,9 @@ void loop() {
   			{
   				strcpy(cmds[cont], dado);
     
-  				//Serial.print(cont);
-  				//Serial.print(" = ");
-  				//Serial.println(cmds[cont]);
+  				Serial.print(cont);
+  				Serial.print(" = ");
+  				Serial.println(cmds[cont]);
   				cont++;
             
   				dado = strtok(NULL, ";:");
@@ -505,8 +438,8 @@ void loop() {
   			playServo(recebido);
   		}
   
-  		//Serial.print(" #> "); 
-  		//Serial.print(current->val);
+  		Serial.print("Vai de "); 
+  		Serial.print(current->val);
   
   		item *nxt = current->next;
   
@@ -515,14 +448,13 @@ void loop() {
   		current = nxt;
   		//current = current->next;
   
-  		Serial.print(" --> ");
-  		Serial.print(current->val);
-      
+  		Serial.print(" para ");
+  		Serial.println(current->val);
+
       yield();
-      //Serial.println("yield");
+      Serial.println("yield");
   	}
-    Serial.println("tail");
-    
+  
   	root = NULL;
   	isBusy = 0;
   }
@@ -555,8 +487,6 @@ short getValue(char *data)
     
     for (short i=1;i<MAXTOKEN;i++)
     {
-      yield();
-
       if (data[i]==':')
       {
         ndata[j]='\0';
@@ -592,8 +522,6 @@ int getExtraValue(char *data)
     
     for (int i=1;i<MAXTOKEN;i++)
     {
-      yield();
-
       if (data[i]==':')
       {
         j=0;
@@ -628,15 +556,13 @@ int playServo(char *data)
     int velocidade = getExtraValue(data);
     
     //int angulo = atoi(data);
-    
-    /*
+
     Serial.print(servonum);
     Serial.print(": ");
     Serial.print(angulo);
     Serial.print(" :: ");
     Serial.println(velocidade);
-    */
-    
+
     moveServo(servonum, angulo, velocidade);
 }
 
@@ -648,8 +574,6 @@ int playServos(char data[MAXSERVOS][16])
 
     for (short i=0;i<MAXSERVOS;i++)
     {
-      yield();
-
       servonums[i] = -1;
       
       if ((short)data[i][0]==0)
@@ -699,8 +623,6 @@ int moveServo(int servonum, int pos, int velocidade)
     {
       for (int v=velocidade; v>0; v--)
       {
-        yield();
-
         if (aceleracao==1)
         {
           incr = dif / v;
@@ -742,8 +664,6 @@ void moveServos(short servonums[], short poss[], short velocidade)
 
     for (short i=0; i<MAXSERVOS; i++)
     {
-      yield();
-
       incrs[i] = 0;
     }
     
@@ -756,13 +676,10 @@ void moveServos(short servonums[], short poss[], short velocidade)
     {
       for (short v=velocidade; v>0; v--)
       {
-        yield();
     		bool pausar = 1;
 
         for (short k=0;k<MAXSERVOS;k++)
         {
-          yield();
-          
           short servonum = servonums[k];
 
           if (servonum==-1)
@@ -781,14 +698,12 @@ void moveServos(short servonums[], short poss[], short velocidade)
 
     		  short dif = pulselength-plold;
 
-          /*
           Serial.print(servonum);
           Serial.print("pulselength, plold, pulso -> ");
 		      Serial.print(pulselength);
           Serial.print(", ");
           Serial.print(plold);
           Serial.print(", ");
-          */
           
           short incr;
           
@@ -815,13 +730,11 @@ void moveServos(short servonums[], short poss[], short velocidade)
             pulso += incr;
           }
 
-          /*
           Serial.print(pulso);
           Serial.print(" (incr: ");
           Serial.print(incr);
           Serial.println(")");
-          */
-          
+
           short npos = -1;
           
           if (lastpulse[servonum]==-1) // Nao tem posicao anterior
@@ -850,8 +763,6 @@ void moveServos(short servonums[], short poss[], short velocidade)
 
     for (short k=0;k<MAXSERVOS;k++)
     {
-      yield();
-
       short servonum = servonums[k];
       if (servonum==-1)
         break;
@@ -859,12 +770,10 @@ void moveServos(short servonums[], short poss[], short velocidade)
       short pos = poss[k];
       short pulselength = map(pos, 0, 180, servomin[servonum], servomax[servonum]);
 
-      /*
       Serial.print("Final ");
       Serial.print(servonum);
       Serial.print(": ");
       Serial.println(pulselength);
-      */
       
       setPWM(servonum, 0, pulselength);
 
@@ -968,22 +877,21 @@ int split(char* data, const char* separador, char retorno[MAXQTTOKEN][MAXTOKEN])
   		for (int i = 0; i < MAXTOKEN; i++)
   		{
   			retorno[cont][i] = '\0';
-        yield();
   		}
   		
-  		//Serial.print("dado = '");
-  		//Serial.print(dado);
-  		//Serial.print("' size = ");
-  		//Serial.println(strlen(dado));
+  		Serial.print("dado = '");
+  		Serial.print(dado);
+  		Serial.print("' size = ");
+  		Serial.println(strlen(dado));
   		//Serial.print("] = ");
   		//Serial.println(retorno[cont]);
   
   		strcpy(retorno[cont], dado);
   
-  		//Serial.print("retorno[");
-  		//Serial.print(cont);
-  		//Serial.print("] = ");
-  		//Serial.println(retorno[cont]);
+  		Serial.print("retorno[");
+  		Serial.print(cont);
+  		Serial.print("] = ");
+  		Serial.println(retorno[cont]);
   		cont++;
         
   		if (cont > MAXQTTOKEN)
